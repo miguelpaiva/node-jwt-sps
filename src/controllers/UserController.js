@@ -16,13 +16,9 @@ module.exports = {
       password,
     };
 
-    try {
-      await connection("users").insert(data);
+    await connection("users").insert(data);
 
-      return res.json(data);
-    } catch (error) {
-      alert("Não foi possível criar o usuário, tente novamente!");
-    }
+    return res.json(data);
   },
 
   async list(req, res) {

@@ -19,52 +19,49 @@ module.exports = {
       user_id,
     };
 
-    try {
-      await connection("companies").insert(data);
+    await connection("companies").insert(data);
 
-      return res.json(data);
-    } catch (error) {
-      alert("Não foi possível criar o usuário, tente novamente!");
-    }
+    return res.json(data);
   },
 
   async list(req, res) {
     const user_id = req.userId;
-    try {
-      const companies = await connection("companies")
-        .where("user_id", user_id)
-        .select("*");
 
-      return res.json(companies);
-    } catch (error) {
-      return res.json(error.message);
-    }
+    const companies = await connection("companies")
+      .where("user_id", user_id)
+      .select("*");
+
+    return res.json(companies);
+  },
+
+  async get(req, res) {
+    const { companyId } = req.params;
+    if (!companyId) return res.status(401).json("No params added.");
+
+    const company = await connection("companies")
+      .where("id", companyId)
+      .select("*")
+      .first();
+
+    if (company === undefined)
+      return res.status(400).json("Empresa não encontrada");
+
+    return res.json(company);
   },
 
   async delete(req, res) {
     const { companyId } = req.params;
-    if (!companyId) return res.status(401).json("No params added.");
 
-    try {
-      await connection("companies").where("id", companyId).delete();
-      return res.status(204).send();
-    } catch (error) {
-      return res.json("Empresa nao existe, tente novamente!");
-    }
+    await connection("companies").where("id", companyId).delete();
+    return res.sendStatus(204);
   },
 
   async update(req, res) {
     const { companyId } = req.params;
     const data = req.body;
 
-    if (!companyId) return res.status(401).json("No params added.");
+    await connection("companies").where("id", companyId).update(data);
 
-    try {
-      await connection("companies").where("id", companyId).update(data);
-
-      return res.status(200).json(data);
-    } catch (error) {
-      return res.json("Empresa nao existe, tente novamente!");
-    }
+    return res.json(data);
   },
 };
