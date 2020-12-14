@@ -7,6 +7,7 @@ const AuthCompaniesMiddleware = require("../middlewares/AuthCompanies.middleware
 const AuthController = require("../controllers/AuthController");
 
 routes.post("/", AuthController.loginAuthToken);
+routes.post("/facebook", AuthController.loginOAuthToken);
 routes.get(
   "/companyToken/:companyId",
   AuthTokenMiddleware,

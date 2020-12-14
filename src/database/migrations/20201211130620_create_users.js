@@ -3,7 +3,11 @@ exports.up = function (knex) {
     table.string("id").primary();
     table.string("name").notNullable();
     table.string("email").notNullable();
-    table.string("password").notNullable();
+    table.string("password");
+
+    table.string("userID");
+    table.string("accessToken");
+    table.integer("authType");
   });
 };
 

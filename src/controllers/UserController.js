@@ -1,24 +1,38 @@
 const connection = require("../database/connection");
 
 const crypto = require("crypto");
-//const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
 module.exports = {
   async create(req, res) {
-    const { name, email, password } = req.body;
+    const { email, password, authType, ...params } = req.body;
 
-    const id = crypto.randomBytes(4).toString("HEX");
+    const isEmail = await connection("users")
+      .where("email", email)
+      .select("email")
+      .first();
 
-    const data = {
-      id,
-      name,
-      email,
-      password,
-    };
+    if (isEmail === undefined) {
+      const id = crypto.randomBytes(4).toString("HEX");
 
-    await connection("users").insert(data);
+      const hash = authType === 0 ? await bcrypt.hash(password, 10) : null;
 
-    return res.json(data);
+      const data = {
+        id,
+        email,
+        password: hash,
+        authType,
+        ...params,
+      };
+
+      await connection("users").insert(data);
+
+      data.password = undefined;
+
+      return res.json(data);
+    } else {
+      return res.status(400).json({ error: "Email já cadastrado no banco" });
+    }
   },
 
   async list(req, res) {

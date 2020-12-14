@@ -19,6 +19,8 @@ module.exports = {
   },
 
   async create(payloads) {
+    if (payloads == undefined || null) return null;
+
     const token = await jwt.sign(payloads, process.env.KEY, {
       expiresIn: 28800, // expira em 8 horas
     });
