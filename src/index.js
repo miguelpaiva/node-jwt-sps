@@ -5,8 +5,10 @@ const cors = require("cors");
 
 const app = express();
 
+const port = process.env.PORT;
+
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3001" }));
+app.use(cors({ origin: `http://localhost:3001` }));
 
 app.use(async (err, req, res, next) => {
   // if (process.env.NODE_ENV === 'development') {
@@ -44,8 +46,6 @@ app.use(async (err, req, res, next) => {
 const routes = require("./routes");
 
 app.use(routes);
-
-const port = process.env.PORT;
 
 app.listen(port, () => {
   console.log(`Back-End running on port ${port}`);
